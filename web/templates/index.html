@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>RAG Visual Demo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <div class="noise-layer" aria-hidden="true"></div>
+
+  <main class="shell">
+    <header class="card hero rise delay-0">
+      <p class="eyebrow">RAG Interview Demo</p>
+      <h1>Panel visual para comparar RAG vs Cloud</h1>
+      <p class="subtitle">
+        Haz la misma pregunta en dos flujos: uno con retrieval y evidencia documental,
+        y otro cloud-only sin contexto recuperado.
+      </p>
+      <div class="hero-metrics">
+        <span class="chip" id="chipHost">Host: --</span>
+        <span class="chip" id="chipIndex">Indice: --</span>
+      </div>
+    </header>
+
+    <section class="layout">
+      <aside class="card control rise delay-1">
+        <h2>Panel de control</h2>
+        <p class="muted">
+          Ajusta modelos y retrieval.
+        </p>
+
+        <label for="questionInput">Pregunta</label>
+        <textarea
+          id="questionInput"
+          rows="5"
+          placeholder="Ejemplo: Cuales son los criterios de escalamiento a humano?"
+        ></textarea>
+
+        <div class="form-grid">
+          <div>
+            <label for="chatModelInput">Modelo RAG</label>
+            <input id="chatModelInput" type="text">
+          </div>
+          <div>
+            <label for="cloudModelInput">Modelo cloud-only</label>
+            <input id="cloudModelInput" type="text">
+          </div>
+          <div>
+            <label for="embeddingModelInput">Modelo embeddings</label>
+            <input id="embeddingModelInput" type="text">
+          </div>
+          <div>
+            <label for="indexPathInput">Indice</label>
+            <input id="indexPathInput" type="text">
+          </div>
+          <div>
+            <label for="topKInput">Top K</label>
+            <input id="topKInput" type="number" min="1" step="1">
+          </div>
+          <div>
+            <label for="thresholdInput">Threshold</label>
+            <input id="thresholdInput" type="number" min="-1" max="1" step="0.01">
+          </div>
+          <div>
+            <label for="timeoutInput">Timeout (s)</label>
+            <input id="timeoutInput" type="number" min="1" step="1">
+          </div>
+        </div>
+
+        <div class="button-row">
+          <button id="askButton" class="btn primary" type="button">Consultar solo RAG</button>
+          <button id="compareButton" class="btn ghost" type="button">Comparar RAG vs Cloud</button>
+        </div>
+
+        <p class="hint">
+          Recomendado para demo: primero consulta solo RAG, luego corre comparativa.
+        </p>
+      </aside>
+
+      <section class="card output rise delay-2">
+        <div class="output-head">
+          <h2>Resultados</h2>
+          <div id="statusBar" class="status info">Listo para ejecutar consultas.</div>
+        </div>
+
+        <div class="metrics">
+          <article class="metric">
+            <span class="metric-label">Modo</span>
+            <span id="metricMode" class="metric-value">-</span>
+          </article>
+          <article class="metric">
+            <span class="metric-label">Latencia RAG</span>
+            <span id="metricRagTime" class="metric-value">-</span>
+          </article>
+          <article class="metric">
+            <span class="metric-label">Latencia Cloud</span>
+            <span id="metricCloudTime" class="metric-value">-</span>
+          </article>
+          <article class="metric">
+            <span class="metric-label">Fuentes</span>
+            <span id="metricSources" class="metric-value">-</span>
+          </article>
+        </div>
+
+        <div id="emptyState" class="empty-state">
+          <h3>Esperando tu pregunta</h3>
+          <p>
+            Ejecuta una consulta para visualizar respuestas, tiempos y trazabilidad.
+          </p>
+        </div>
+
+        <div id="resultGrid" class="result-grid hidden">
+          <article id="ragPanel" class="result-panel">
+            <div class="panel-head">
+              <h3>RAG con contexto</h3>
+              <span id="ragModelTag" class="tag">-</span>
+            </div>
+            <pre id="ragAnswer" class="answer"></pre>
+
+            <div class="citations-wrap">
+              <h4>Fuentes recuperadas</h4>
+              <ul id="citationList" class="citation-list"></ul>
+            </div>
+          </article>
+
+          <article id="cloudPanel" class="result-panel">
+            <div class="panel-head">
+              <h3>Cloud-only sin retrieval</h3>
+              <span id="cloudModelTag" class="tag">-</span>
+            </div>
+            <pre id="cloudAnswer" class="answer"></pre>
+          </article>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <script>
+    window.APP_DEFAULTS = {{ defaults | tojson }};
+  </script>
+  <script src="/static/app.js" defer></script>
+</body>
+</html>
