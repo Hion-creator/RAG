@@ -1,4 +1,4 @@
-# RAG Beta con Ollama Cloud (Demo de Entrevista)
+# RAG Beta con Ollama Cloud Demo
 
 Este proyecto implementa un RAG basico en Python con:
 - Ingesta de documentos (`.md`, `.txt`)
